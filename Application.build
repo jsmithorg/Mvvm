@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build;Documentation;UnitTests" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="MSBuild.ExtensionPack.Framework.Assembly" AssemblyFile="$(MSBuildExtensionsPath)\ExtensionPack\MSBuild.ExtensionPack.dll"/>
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+  
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <SolutionDir></SolutionDir>
+    <DeployDir>$(SolutionDir)Bin\</DeployDir>
+    <DeployTempDir>$(SolutionDir)Bin\Temp\</DeployTempDir>
+    <DeployAssembly>$(DeployDir)Tmobile.Framework.dll</DeployAssembly>
+    <WebBinDir>$(SolutionDir)Source\WebTemplate\Bin\</WebBinDir>
+    <DocDir>$(SolutionDir)Doc\</DocDir>
+    <DocTempDir>$(SolutionDir)Doc\Temp\</DocTempDir>
+    <UnitTestDir>$(SolutionDir)Unit Tests\</UnitTestDir>
+    <StrongKey>$(SolutionDir)StrongKey\keypair.snk</StrongKey>
+    <PublicKey>912cd2b306e49870</PublicKey>
+    <ILMerge>&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot;</ILMerge>
+  </PropertyGroup>
+
+  <!--<UsingTask TaskName="ILMerge.MSBuild.Tasks.ILMerge" AssemblyFile="ILMerge.MSBuild.Tasks.ILMerge"/>-->
+
+  <Target Name="PreBuild" DependsOnTargets="DependencyBuild">
+    
+    <ItemGroup>
+      <DeploymentFiles Include="$(DeployDir)*.*" />
+      <WebBinFiles Include="$(WebBinDir)*.*" />
+    </ItemGroup>
+    
+    <!-- Set up our Build directories -->
+    <RemoveDir Directories="$(DeployTempDir)" />
+    <Delete Files="@(DeploymentFiles)" />
+    <MakeDir Directories="$(DeployDir)" />
+    <MakeDir Directories="$(DeployTempDir)" />
+    
+  </Target>
+  
+  <Target Name="DependencyBuild">
+    <ItemGroup>
+      <ProjectFiles Include="$(SolutionDir)Source\Framework\Framework.csproj" />
+      <ProjectFiles Include="$(SolutionDir)Source\Framework.Logging\Framework.Logging.csproj" />
+      <ProjectFiles Include="$(SolutionDir)Source\Framework.Presentation\Framework.Presentation.csproj" />
+      <!--<ProjectFiles Include="$(SolutionDir)Source\Controls\Deploy\Deploy.wdproj" />-->
+    </ItemGroup>
+    <MSBuild Projects="@(ProjectFiles)" Targets="Build" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="DependencyBuild;PreBuild">
+
+    <ItemGroup>
+      <FrameworkAssemblies Include="$(SolutionDir)Source\Framework\bin\$(Configuration)\*.*" />
+      <FrameworkLoggingAssemblies Include="$(SolutionDir)Source\Framework.Logging\bin\$(Configuration)\*.*" />
+      <FrameworkPresentationAssemblies Include="$(SolutionDir)Source\Framework.Presentation\bin\$(Configuration)\*.*" />
+      <FrameworkResourcesAssemblies Include="$(SolutionDir)Source\Framework.Resources\bin\$(Configuration)\*.*" />
+      <!--<ControlsAssemblies Include="$(SolutionDir)Source\Controls\Deploy\$(Configuration)\bin\*.*" />-->
+    </ItemGroup>
+    
+    <Message Text="Copying @(FrameworkAssemblies) to $(DeployTempDir)" />
+    <Copy SourceFiles="@(FrameworkAssemblies)" DestinationFolder="$(DeployTempDir)" />
+    <Message Text="Copying @(FrameworkLoggingAssemblies) to $(DeployTempDir)" />
+    <Copy SourceFiles="@(FrameworkLoggingAssemblies)" DestinationFolder="$(DeployTempDir)" />
+    <Message Text="Copying @(FrameworkPresentationAssemblies) to $(DeployTempDir)" />
+    <Copy SourceFiles="@(FrameworkPresentationAssemblies)" DestinationFolder="$(DeployTempDir)" />
+    <Message Text="Copying @(FrameworkResourcesAssemblies) to $(DeployTempDir)" />
+    <Copy SourceFiles="@(FrameworkResourcesAssemblies)" DestinationFolder="$(DeployTempDir)" />
+    <!--<Message Text="Copying @(ControlsAssemblies) to $(DeployTempDir)" />
+    <Copy SourceFiles="@(ControlsAssemblies)" DestinationFolder="$(DeployTempDir)" />-->
+
+    <Message Text="Merging assemblies $(ILMerge) /log /copyattrs:True /wildcards /keyfile:$(StrongKey) /out:$(DeployAssembly) $(DeployTempDir)*.dll" />
+    <Exec ContinueOnError="false" Command="$(ILMerge) /log /copyattrs:True /wildcards /keyfile:$(StrongKey) /out:$(DeployAssembly) $(DeployTempDir)*.dll"/>
+    
+    <!-- Remove our temporary build directory -->
+    <RemoveDir Directories="$(DeployTempDir)" />
+    
+    <!-- Move our new assembly to the web template bin directory -->
+    <Message Text="Deleting files: @(WebBinFiles)" />
+    <Delete Files="@(WebBinFiles)" />
+    <Message Text="Copying files to web template: @(DeploymentFiles)" />
+    <Copy SourceFiles="@(DeploymentFiles)" DestinationFolder="$(WebBinDir)" />
+
+    <MSBuild.ExtensionPack.Framework.Assembly TaskAction="GetInfo" NetAssembly="$(DeployAssembly)">
+      <Output TaskParameter="OutputItems" ItemName="Info"/>
+    </MSBuild.ExtensionPack.Framework.Assembly>
+
+    <Message Text="AssemblyVersion: %(Info.AssemblyVersion)" />
+    
+    <!-- Update the web template web.config file to reference the new version of the assembly -->
+    <FileUpdate Files="$(SolutionDir)Source/WebTemplate/web.config"
+                Regex="Version=(.*?),(.*?)PublicKeyToken=$(PublicKey)"
+                ReplacementText="Version=%(Info.AssemblyVersion),$2PublicKeyToken=$(PublicKey)" />
+
+    <!--<ILMerge 
+      Target="SameAsPrimaryAssembly"
+      InputAssemblies="@(MergeAssemblies)" 
+      OutputFile="$(DeployDir)Combined.Assembly.dll" 
+      CopyAttributes="true"
+      DebugInfo="true"
+      Log="true"
+      KeyFile="$(StrongKey)"/>-->
+    
+  </Target>
+
+  <!-- 
+    Create Documentation
+  -->
+  <Target Name="Documentation" DependsOnTargets="Build">
+
+    <ItemGroup>
+      <DocFiles Include="$(DocDir)*.*" />
+    </ItemGroup>
+    
+    <!-- Set up our Documentation directories -->
+    <!--<RemoveDir Directories="$(DocTempDir)" />
+    <Delete Files="@(DocFiles)" />
+    <MakeDir Directories="$(DocDir)" />
+    <MakeDir Directories="$(DocTempDir)" />-->
+    
+    <Message Text="Creating documentation (not implemented yet)" />
+    
+  </Target>
+  
+  <!--
+    Run Unit Tests
+  -->
+    <Target Name="UnitTests" DependsOnTargets="Build">
+      
+      <ItemGroup>
+        <TestAssemblies Include="$(UnitTestDir)**\bin\$(Configuration)\*.Tests.dll" />
+      </ItemGroup>
+
+      <Message Text="Running unit tests: @(TestAssemblies)" />
+      <!--<NUnit ToolPath="C:\Program Files\NUnit 2.5.2\bin\net-2.0" Assemblies="@(TestAssemblies)" OutputXmlFile="$(UnitTestDir)TestResult.xml" />
+      -->
+    </Target>
+  
+</Project>

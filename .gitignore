@@ -1,0 +1,8 @@
+*.suo
+Source/Mvvm/Bin/
+Source/Mvvm/obj/
+Unit Tests/MvvmTests/bin/
+Unit Tests/MvvmTests/obj/
+Unit Tests/Mvvm.VisualState.xml
+Unit Tests/TestResult.xml
+
