@@ -12,10 +12,10 @@ namespace JSmith.Mvvm.Command
     /// to execute.
     /// </para>
     /// </remarks>
-    public class DelegateCommand : Command
+    public class DelegateCommand<T> : Command
     {
-        private readonly Predicate<object> _canExecute;
-        private readonly Action<object> _execute;
+        private readonly Func<T, bool> _canExecute;
+        private readonly Action<T> _execute;
 
         /// <summary>
         /// Constructs an instance of <c>DelegateCommand</c>.
@@ -27,7 +27,7 @@ namespace JSmith.Mvvm.Command
         /// <param name="execute">
         /// The delegate to invoke when the command is executed.
         /// </param>
-        public DelegateCommand(Action<object> execute) : this(execute, null) { }
+        public DelegateCommand(Action<T> execute) : this(execute, null) { }
 
         /// <summary>
         /// Constructs an instance of <c>DelegateCommand</c>.
@@ -38,7 +38,7 @@ namespace JSmith.Mvvm.Command
         /// <param name="canExecute">
         /// The delegate to invoke to determine whether the command can execute.
         /// </param>
-        public DelegateCommand(Action<object> execute, Predicate<object> canExecute)
+        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute)
         {
             //execute.AssertNotNull("execute");
             _execute = execute;
@@ -64,7 +64,7 @@ namespace JSmith.Mvvm.Command
             if (_canExecute == null)
                 return true;
 
-            return _canExecute(parameter);
+            return _canExecute((T)parameter);
 
         }//end method
 
@@ -83,7 +83,7 @@ namespace JSmith.Mvvm.Command
 
             try
             {
-                _execute(parameter);
+                _execute((T)parameter);
             }
             catch (Exception ex)
             {
