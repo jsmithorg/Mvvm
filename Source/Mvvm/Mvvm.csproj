@@ -15,7 +15,7 @@
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\StrongKey\keypair.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\StrongKey\keypair.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,6 +56,7 @@
     <Compile Include="Model\Model.cs" />
     <Compile Include="MvvmLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="View\ViewLocator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" />
-  <Import Project="..\..\Tasks\JSmith.Mvvm.VersionNumber.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -81,4 +81,5 @@
         <SilverlightProjectProperties />
       </FlavorProperties>
     </VisualStudio>
-  </ProjectExt
+  </ProjectExtensions>
+</Project>
