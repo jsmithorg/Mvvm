@@ -154,14 +154,14 @@
 
     -->
 
-    <GitRevision>
+    <GitRevision ContinueOnError="true">
       <Output TaskParameter="RevisionSinceLastTag" PropertyName="Revision"/>
       <Output TaskParameter="LastTag" PropertyName="Tag" />
     </GitRevision>
 
     <Message Text="REVISION!!!! $(Revision) :::: $(Tag)" />
     
-    <GitInfo DateFormat="MMdd">
+    <GitInfo DateFormat="MMdd" ContinueOnError="true">
       <Output TaskParameter="Hash" PropertyName="Hash" />
       <Output TaskParameter="Author" PropertyName="Author" />
       <Output TaskParameter="AuthorEmail" PropertyName="AuthorEmail" />
