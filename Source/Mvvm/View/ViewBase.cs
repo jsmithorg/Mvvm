@@ -15,6 +15,8 @@ namespace JSmith.Mvvm.View
 {
     public class ViewBase : UserControl, IView
     {
+        public const string DefaultRootElementName = "LayoutRoot";
+
         #region Fields / Properties
 
         protected MvvmLocator<IView> Views { get { return ViewLocator.Instance; } }
@@ -36,7 +38,7 @@ namespace JSmith.Mvvm.View
                     Views[value] = this;
                 else
                     Views.Add(value, this);
-
+                
             }//end set
 
         }//end property
@@ -54,6 +56,42 @@ namespace JSmith.Mvvm.View
         }//end constructor
 
         #endregion
+
+        protected object GetRootElement()
+        {
+            return FindName(DefaultRootElementName);
+
+        }//end method
+
+        protected T GetRootElement<T>()
+        {
+            return (T)FindName(DefaultRootElementName);
+
+        }//end method
+
+        protected object GetRootElement(string rootElementName)
+        {
+            return FindName(rootElementName);
+
+        }//end method
+
+        protected T GetRootElement<T>(string rootElementName)
+        {
+            return (T)FindName(rootElementName);
+
+        }//end method
+
+        protected object GetElement(string elementName)
+        {
+            return FindName(elementName);
+
+        }//end method
+
+        protected T GetElement<T>(string elementName)
+        {
+            return (T)FindName(elementName);
+
+        }//end method
 
     }//end class
 

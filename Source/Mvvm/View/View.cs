@@ -50,18 +50,6 @@ namespace JSmith.Mvvm.View
             
         }//end method
 
-        protected object GetElement(string elementName)
-        {
-            return FindName(elementName);
-
-        }//end method
-
-        protected T GetElement<T>(string elementName)
-        {
-            return (T)FindName(elementName);
-
-        }//end method
-
     }//end class
 
 }//end namespace
