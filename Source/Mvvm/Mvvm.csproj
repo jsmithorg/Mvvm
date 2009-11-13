@@ -65,6 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\ViewBase.cs" />
+    <Compile Include="View\ViewController.cs" />
     <Compile Include="View\ViewLocator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" />
