@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows.Data;
 
 namespace JSmith.Mvvm.Command
 {
@@ -66,6 +67,31 @@ namespace JSmith.Mvvm.Command
             _canExecute = canExecute;
 
             listeningModel.PropertyChanged += (s, e) => OnCanExecuteChanged();
+
+        }//end method
+
+        /// <summary>
+        /// Constructs an instance of <c>DelegateCommand</c>.
+        /// </summary>
+        /// <param name="execute">
+        /// The delegate to invoke when the command is executed.
+        /// </param>
+        /// <param name="canExecute">
+        /// The delegate to invoke to determine whether the command can execute.
+        /// </param>
+        /// <param name="listeningModel">
+        /// The <c>INotifyPropertyChanged</c> instance to listen to that will trigger the <c>CanExecuteChanged</c> event.
+        /// </param>
+        /// /// <param name="listeningProperty">
+        /// The property to listen to on the <c>listeningModel</c> that will trigger the <c>CanExecuteChanged</c> event.
+        /// </param>
+        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute, INotifyPropertyChanged listeningModel, string listeningProperty)
+        {
+            //execute.AssertNotNull("execute");
+            _execute = execute;
+            _canExecute = canExecute;
+
+            listeningModel.PropertyChanged += (s, e) => { if (e.PropertyName == listeningProperty) OnCanExecuteChanged(); };
 
         }//end method
 
