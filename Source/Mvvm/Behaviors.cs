@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Reflection;
 
 namespace JSmith.Mvvm
 {
@@ -18,7 +19,7 @@ namespace JSmith.Mvvm
 
         private static void CommandPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
-            ButtonBase element = o as ButtonBase;
+            UIElement element = o as UIElement;
             if (element != null)
             {
                 if (e.OldValue != null)
@@ -32,34 +33,29 @@ namespace JSmith.Mvvm
             }
         }
 
-        private static void HookCommand(ButtonBase element, ICommand command)
+        private static void HookCommand(UIElement element, ICommand command)
         {
             CommandButtonBehaviors Behaviors = new CommandButtonBehaviors(element, command);
             Behaviors.Attach();
             element.SetValue(CommandButtonBehaviorsProperty, Behaviors);
         }
 
-        private static void UnhookCommand(ButtonBase element, ICommand command)
+        private static void UnhookCommand(UIElement element, ICommand command)
         {
             CommandButtonBehaviors Behaviors = (CommandButtonBehaviors)element.GetValue(CommandButtonBehaviorsProperty);
             Behaviors.Detach();
             element.ClearValue(CommandButtonBehaviorsProperty);
         }
 
-        public static void SetCommand(this Button b, ICommand command)
+        public static void SetCommand(this UIElement element, ICommand command)
         {
-            b.SetValue(Behaviors.CommandProperty, command);
+            element.SetValue(CommandProperty, command);
 
         }//end method
 
-        public static ICommand GetCommand(ButtonBase buttonBase)
+        public static ICommand GetCommand(this UIElement element)
         {
-            return (ICommand)buttonBase.GetValue(CommandProperty);
-        }
-
-        public static void SetCommand(ButtonBase buttonBase, ICommand value)
-        {
-            buttonBase.SetValue(CommandProperty, value);
+            return (ICommand)element.GetValue(CommandProperty);
         }
 
         #region Command Target
@@ -68,14 +64,32 @@ namespace JSmith.Mvvm
             DependencyProperty.RegisterAttached("CommandTarget", typeof(object), typeof(Behaviors),
             null);
 
-        public static object GetCommandTarget(DependencyObject target)
+        public static object GetCommandTarget(this DependencyObject target)
         {
             return target.GetValue(CommandTargetProperty);
         }
 
-        public static void SetCommandTarget(DependencyObject target, object value)
+        public static void SetCommandTarget(this DependencyObject target, object value)
         {
             target.SetValue(CommandTargetProperty, value);
+        }
+
+        #endregion
+
+        #region Command Trigger
+
+        public static readonly DependencyProperty CommandTriggerProperty =
+            DependencyProperty.RegisterAttached("CommandTrigger", typeof(object), typeof(Behaviors),
+            null);
+
+        public static object GetCommandTrigger(this DependencyObject target)
+        {
+            return target.GetValue(CommandTriggerProperty);
+        }
+
+        public static void SetCommandTrigger(this DependencyObject target, object value)
+        {
+            target.SetValue(CommandTriggerProperty, value);
         }
 
         #endregion
@@ -86,53 +100,70 @@ namespace JSmith.Mvvm
             DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(Behaviors),
             null);
 
-        public static object GetCommandParameter(ButtonBase buttonBase)
+        public static object GetCommandParameter(this UIElement element)
         {
-            return buttonBase.GetValue(CommandParameterProperty);
+            return element.GetValue(CommandParameterProperty);
         }
 
-        public static void SetCommandParameter(ButtonBase buttonBase, object value)
+        public static void SetCommandParameter(this UIElement element, object value)
         {
-            buttonBase.SetValue(CommandParameterProperty, value);
+            element.SetValue(CommandParameterProperty, value);
         }
 
         #endregion
 
         private class CommandButtonBehaviors
         {
-            private readonly WeakReference elementReference;
-            private readonly ICommand command;
+            private readonly WeakReference _elementReference;
+            private readonly ICommand _command;
 
-            public CommandButtonBehaviors(ButtonBase element, ICommand command)
+            public CommandButtonBehaviors(UIElement element, ICommand command)
             {
-                this.elementReference = new WeakReference(element);
-                this.command = command;
+                _elementReference = new WeakReference(element);
+                _command = command;
             }
 
             public void Attach()
             {
-                ButtonBase element = GetElement();
+                UIElement element = GetElement();
+
+                System.Diagnostics.Debug.WriteLine("Attaching mouse down event: " + element);
+
                 if (element != null)
                 {
-                    element.Click += element_Clicked;
-                    command.CanExecuteChanged += command_CanExecuteChanged;
+                    if (element is ButtonBase)
+                    {
+                        ButtonBase button = (ButtonBase)element;
+                        button.Click += element_Clicked;
+
+                        System.Diagnostics.Debug.WriteLine("Object is button: " + button);
+
+                    }
+                    else
+                    {
+                        element.MouseLeftButtonDown += element_Clicked;
+
+                    }//end if
+                    
+                    _command.CanExecuteChanged += command_CanExecuteChanged;
                     SetIsEnabled(element);
                 }
             }
 
             public void Detach()
             {
-                command.CanExecuteChanged -= command_CanExecuteChanged;
-                ButtonBase element = GetElement();
+                _command.CanExecuteChanged -= command_CanExecuteChanged;
+
+                UIElement element = GetElement();
                 if (element != null)
                 {
-                    element.Click -= element_Clicked;
+                    element.MouseLeftButtonDown -= element_Clicked;
                 }
             }
 
-            void command_CanExecuteChanged(object sender, EventArgs e)
+            private void command_CanExecuteChanged(object sender, EventArgs e)
             {
-                ButtonBase element = GetElement();
+                UIElement element = GetElement();
                 if (element != null)
                 {
                     SetIsEnabled(element);
@@ -143,27 +174,48 @@ namespace JSmith.Mvvm
                 }
             }
 
-            private void SetIsEnabled(ButtonBase element)
+            private void SetIsEnabled(UIElement element)
             {
-                element.IsEnabled = command.CanExecute(element.GetValue(Behaviors.CommandParameterProperty));
-            }
+                bool isEnabled = _command.CanExecute(element.GetValue(Behaviors.CommandParameterProperty));
+
+                Control c = element as Control;
+                if (c != null)
+                    c.IsEnabled = isEnabled;
+
+                //element.IsEnabled = command.CanExecute(element.GetValue(Behaviors.CommandParameterProperty));
+
+            }//end method
 
             private static void element_Clicked(object sender, EventArgs e)
             {
+                System.Diagnostics.Debug.WriteLine("element clicked: " + sender);
                 DependencyObject element = (DependencyObject)sender;
                 ICommand command = (ICommand)element.GetValue(CommandProperty);
                 object commandParameter = element.GetValue(CommandParameterProperty);
 
-                //MVCEventArgs args = new MVCEventArgs();
-                //args.Sender = element;
-                //args.Data = commandParameter;
                 command.Execute(commandParameter);
-            }
 
-            private ButtonBase GetElement()
+            }//end method
+
+            private static void element_Clicked(object sender, MouseButtonEventArgs e)
             {
-                return elementReference.Target as ButtonBase;
-            }
-        }
-    }
-}
+                System.Diagnostics.Debug.WriteLine("element clicked: " + sender);
+                DependencyObject element = (DependencyObject)sender;
+                ICommand command = (ICommand)element.GetValue(CommandProperty);
+                object commandParameter = element.GetValue(CommandParameterProperty);
+
+                command.Execute(commandParameter);
+
+            }//end method
+
+            private UIElement GetElement()
+            {
+                return _elementReference.Target as UIElement;
+
+            }//end method
+
+        }//end class
+    
+    }//end class
+
+}//end namespace
