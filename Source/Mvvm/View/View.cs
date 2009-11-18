@@ -13,7 +13,7 @@ using System.Windows.Browser;
 
 namespace JSmith.Mvvm.View
 {
-    public class View : ViewBase
+    public class View : ViewBase, IView
     {
         private bool _contentLoaded;
 

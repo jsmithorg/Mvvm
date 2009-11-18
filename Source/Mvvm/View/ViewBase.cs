@@ -20,7 +20,16 @@ namespace JSmith.Mvvm.View
         #region Fields / Properties
 
         protected MvvmLocator<IView> Views { get { return ViewLocator.Instance; } }
-        protected MvvmLocator<ViewModel.IViewModel> ViewModels { get { return ViewModelLocator.Instance; } }
+        protected MvvmLocator<IViewModel> ViewModels { get { return ViewModelLocator.Instance; } }
+
+        #region IView Members
+
+        public virtual IViewModel ViewModel
+        {
+            get { return (IViewModel)DataContext; }
+            set { DataContext = value; }
+
+        }//end property
 
         #endregion
 
@@ -38,10 +47,12 @@ namespace JSmith.Mvvm.View
                     Views[value] = this;
                 else
                     Views.Add(value, this);
-                
+
             }//end set
 
         }//end property
+
+        #endregion
 
         #endregion
 
@@ -56,6 +67,8 @@ namespace JSmith.Mvvm.View
         }//end constructor
 
         #endregion
+
+        #region Methods
 
         protected object GetRootElement()
         {
@@ -92,6 +105,8 @@ namespace JSmith.Mvvm.View
             return (T)FindName(elementName);
 
         }//end method
+
+        #endregion
 
     }//end class
 
