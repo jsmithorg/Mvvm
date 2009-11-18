@@ -13,7 +13,7 @@ namespace JSmith.Mvvm
 {
     public interface ILocatable
     {
-        string ID { get; set; }
+        string Id { get; set; }
 
     }//end interface
 

@@ -36,7 +36,7 @@ namespace JSmith.Mvvm.View
         #region ILocatable Members
 
         private string _id;
-        public string ID
+        public string Id
         {
             get { return _id; }
             set
@@ -62,7 +62,7 @@ namespace JSmith.Mvvm.View
 
         public ViewBase(string id) : this()
         {
-            ID = id;
+            Id = id;
 
         }//end constructor
 

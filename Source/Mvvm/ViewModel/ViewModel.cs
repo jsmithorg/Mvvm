@@ -19,12 +19,12 @@ namespace JSmith.Mvvm.ViewModel
         protected MvvmLocator<View.IView> Views { get { return ViewLocator.Instance; } }
         protected MvvmLocator<IViewModel> ViewModels { get { return ViewModelLocator.Instance; } }
 
-        public string ID
+        public string Id
         {
-            get { return GetValue<string>("ID"); }
+            get { return GetValue<string>("Id"); }
             set
             {
-                SetValue("ID", value);
+                SetValue("Id", value);
 
                 if (ViewModels.ContainsKey(value))
                     ViewModels[value] = this;
@@ -38,7 +38,7 @@ namespace JSmith.Mvvm.ViewModel
         public ViewModel() : base() { }
         public ViewModel(string id) : this()
         {
-            ID = id;
+            Id = id;
 
         }//end constructor
 
