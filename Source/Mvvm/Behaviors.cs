@@ -6,46 +6,15 @@ using System.Windows.Input;
 
 namespace JSmith.Mvvm
 {
-    public static class Behavior
+    public static partial class Behaviors
     {
-        private static readonly DependencyProperty CommandButtonBehaviorProperty =
-            DependencyProperty.RegisterAttached("CommandButtonBehavior", typeof(CommandButtonBehavior),
-                                                typeof(Behavior), null);
+        private static readonly DependencyProperty CommandButtonBehaviorsProperty =
+            DependencyProperty.RegisterAttached("CommandButtonBehaviors", typeof(CommandButtonBehaviors),
+                                                typeof(Behaviors), null);
 
         public static readonly DependencyProperty CommandProperty =
-            DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(Behavior),
+            DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(Behaviors),
             new PropertyMetadata(CommandPropertyChanged));
-
-        public static void SetCommand(this Button b, ICommand command)
-        {
-            b.SetValue(Behavior.CommandProperty, command);
-
-        }//end method
-
-        public static ICommand GetCommand(ButtonBase buttonBase)
-        {
-            return (ICommand)buttonBase.GetValue(CommandProperty);
-        }
-
-        public static void SetCommand(ButtonBase buttonBase, ICommand value)
-        {
-            buttonBase.SetValue(CommandProperty, value);
-        }
-
-
-        public static readonly DependencyProperty CommandParameterProperty =
-            DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(Behavior),
-            null);
-
-        public static object GetCommandParameter(ButtonBase buttonBase)
-        {
-            return buttonBase.GetValue(CommandParameterProperty);
-        }
-
-        public static void SetCommandParameter(ButtonBase buttonBase, object value)
-        {
-            buttonBase.SetValue(CommandParameterProperty, value);
-        }
 
         private static void CommandPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
@@ -65,26 +34,76 @@ namespace JSmith.Mvvm
 
         private static void HookCommand(ButtonBase element, ICommand command)
         {
-            CommandButtonBehavior behavior = new CommandButtonBehavior(element, command);
-            behavior.Attach();
-            element.SetValue(CommandButtonBehaviorProperty, behavior);
+            CommandButtonBehaviors Behaviors = new CommandButtonBehaviors(element, command);
+            Behaviors.Attach();
+            element.SetValue(CommandButtonBehaviorsProperty, Behaviors);
         }
 
         private static void UnhookCommand(ButtonBase element, ICommand command)
         {
-            CommandButtonBehavior behavior = (CommandButtonBehavior)element.GetValue(CommandButtonBehaviorProperty);
-            behavior.Detach();
-            element.ClearValue(CommandButtonBehaviorProperty);
+            CommandButtonBehaviors Behaviors = (CommandButtonBehaviors)element.GetValue(CommandButtonBehaviorsProperty);
+            Behaviors.Detach();
+            element.ClearValue(CommandButtonBehaviorsProperty);
         }
 
+        public static void SetCommand(this Button b, ICommand command)
+        {
+            b.SetValue(Behaviors.CommandProperty, command);
 
+        }//end method
 
-        private class CommandButtonBehavior
+        public static ICommand GetCommand(ButtonBase buttonBase)
+        {
+            return (ICommand)buttonBase.GetValue(CommandProperty);
+        }
+
+        public static void SetCommand(ButtonBase buttonBase, ICommand value)
+        {
+            buttonBase.SetValue(CommandProperty, value);
+        }
+
+        #region Command Target
+
+        public static readonly DependencyProperty CommandTargetProperty =
+            DependencyProperty.RegisterAttached("CommandTarget", typeof(object), typeof(Behaviors),
+            null);
+
+        public static object GetCommandTarget(DependencyObject target)
+        {
+            return target.GetValue(CommandTargetProperty);
+        }
+
+        public static void SetCommandTarget(DependencyObject target, object value)
+        {
+            target.SetValue(CommandTargetProperty, value);
+        }
+
+        #endregion
+
+        #region Command Parameter
+
+        public static readonly DependencyProperty CommandParameterProperty =
+            DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(Behaviors),
+            null);
+
+        public static object GetCommandParameter(ButtonBase buttonBase)
+        {
+            return buttonBase.GetValue(CommandParameterProperty);
+        }
+
+        public static void SetCommandParameter(ButtonBase buttonBase, object value)
+        {
+            buttonBase.SetValue(CommandParameterProperty, value);
+        }
+
+        #endregion
+
+        private class CommandButtonBehaviors
         {
             private readonly WeakReference elementReference;
             private readonly ICommand command;
 
-            public CommandButtonBehavior(ButtonBase element, ICommand command)
+            public CommandButtonBehaviors(ButtonBase element, ICommand command)
             {
                 this.elementReference = new WeakReference(element);
                 this.command = command;
@@ -126,7 +145,7 @@ namespace JSmith.Mvvm
 
             private void SetIsEnabled(ButtonBase element)
             {
-                element.IsEnabled = command.CanExecute(element.GetValue(Behavior.CommandParameterProperty));
+                element.IsEnabled = command.CanExecute(element.GetValue(Behaviors.CommandParameterProperty));
             }
 
             private static void element_Clicked(object sender, EventArgs e)

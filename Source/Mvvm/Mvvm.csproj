@@ -48,10 +48,10 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors.cs" />
     <Compile Include="ObservableCollectionExtension.cs" />
     <Compile Include="Command\Command.cs" />
     <Compile Include="Command\DelegateCommand.cs" />
-    <Compile Include="Behavior.cs" />
     <Compile Include="ILocatable.cs" />
     <Compile Include="Model\IModel.cs" />
     <Compile Include="Model\Model.cs" />
