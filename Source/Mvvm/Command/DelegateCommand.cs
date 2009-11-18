@@ -14,10 +14,10 @@ namespace JSmith.Mvvm.Command
     /// to execute.
     /// </para>
     /// </remarks>
-    public class DelegateCommand<T> : Command
+    public class DelegateCommand<TElement, TParameter> : Command
     {
-        private readonly Func<T, bool> _canExecute;
-        private readonly Action<T> _execute;
+        private readonly Func<TElement, TParameter, bool> _canExecute;
+        private readonly Action<TElement, TParameter> _execute;
 
         /// <summary>
         /// Constructs an instance of <c>DelegateCommand</c>.
@@ -29,7 +29,7 @@ namespace JSmith.Mvvm.Command
         /// <param name="execute">
         /// The delegate to invoke when the command is executed.
         /// </param>
-        public DelegateCommand(Action<T> execute) : this(execute, null) { }
+        public DelegateCommand(Action<TElement, TParameter> execute) : this(execute, null) { }
 
         /// <summary>
         /// Constructs an instance of <c>DelegateCommand</c>.
@@ -40,7 +40,7 @@ namespace JSmith.Mvvm.Command
         /// <param name="canExecute">
         /// The delegate to invoke to determine whether the command can execute.
         /// </param>
-        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute)
+        public DelegateCommand(Action<TElement, TParameter> execute, Func<TElement, TParameter, bool> canExecute)
         {
             //execute.AssertNotNull("execute");
             _execute = execute;
@@ -60,7 +60,7 @@ namespace JSmith.Mvvm.Command
         /// <param name="listeningProperty">
         /// The <c>INotifyPropertyChanged</c> instance to listen to that will trigger the <c>CanExecuteChanged</c> event.
         /// </param>
-        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute, INotifyPropertyChanged listeningModel)
+        public DelegateCommand(Action<TElement, TParameter> execute, Func<TElement, TParameter, bool> canExecute, INotifyPropertyChanged listeningModel)
         {
             //execute.AssertNotNull("execute");
             _execute = execute;
@@ -85,13 +85,17 @@ namespace JSmith.Mvvm.Command
         /// /// <param name="listeningProperty">
         /// The property to listen to on the <c>listeningModel</c> that will trigger the <c>CanExecuteChanged</c> event.
         /// </param>
-        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute, INotifyPropertyChanged listeningModel, string listeningProperty)
+        public DelegateCommand(Action<TElement, TParameter> execute, Func<TElement, TParameter, bool> canExecute, INotifyPropertyChanged listeningModel, string listeningProperty)
         {
             //execute.AssertNotNull("execute");
             _execute = execute;
             _canExecute = canExecute;
 
-            listeningModel.PropertyChanged += (s, e) => { if (e.PropertyName == listeningProperty) OnCanExecuteChanged(); };
+            listeningModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == listeningProperty)
+                    OnCanExecuteChanged();
+            };
 
         }//end method
 
@@ -113,7 +117,9 @@ namespace JSmith.Mvvm.Command
             if (_canExecute == null)
                 return true;
 
-            return _canExecute((T)parameter);
+            CommandEventArgs args = (CommandEventArgs)parameter;
+
+            return _canExecute((TElement)args.Sender, (TParameter)args.Parameter);
 
         }//end method
 
@@ -132,7 +138,8 @@ namespace JSmith.Mvvm.Command
 
             try
             {
-                _execute((T)parameter);
+                CommandEventArgs args = (CommandEventArgs)parameter;
+                _execute((TElement)args.Sender, (TParameter)args.Parameter);
             }
             catch (Exception ex)
             {

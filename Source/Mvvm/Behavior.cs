@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using JSmith.Mvvm.Command;
 
 namespace JSmith.Mvvm
 {
@@ -126,7 +127,8 @@ namespace JSmith.Mvvm
 
             private void SetIsEnabled(ButtonBase element)
             {
-                element.IsEnabled = command.CanExecute(element.GetValue(Behavior.CommandParameterProperty));
+                object commandParameter = element.GetValue(Behavior.CommandParameterProperty);
+                element.IsEnabled = command.CanExecute(new CommandEventArgs(element, commandParameter));
             }
 
             private static void element_Clicked(object sender, EventArgs e)
@@ -138,7 +140,9 @@ namespace JSmith.Mvvm
                 //MVCEventArgs args = new MVCEventArgs();
                 //args.Sender = element;
                 //args.Data = commandParameter;
-                command.Execute(commandParameter);
+
+                //command.Execute(commandParameter);
+                command.Execute(new CommandEventArgs(element, commandParameter));
             }
 
             private ButtonBase GetElement()

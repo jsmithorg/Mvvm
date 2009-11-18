@@ -48,6 +48,7 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\CommandEventArgs.cs" />
     <Compile Include="ObservableCollectionExtension.cs" />
     <Compile Include="Command\Command.cs" />
     <Compile Include="Command\DelegateCommand.cs" />

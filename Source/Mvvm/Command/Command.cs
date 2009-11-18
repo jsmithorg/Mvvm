@@ -112,6 +112,8 @@ namespace JSmith.Mvvm.Command
 
         #endregion
 
+        #region Methods
+
         protected virtual void OnCanExecuteChanged()
         {
             EventHandler handler;
@@ -167,6 +169,8 @@ namespace JSmith.Mvvm.Command
                 handler(this, new EventArgs());
 
         }//end method
+
+        #endregion
 
     }//end class
 
