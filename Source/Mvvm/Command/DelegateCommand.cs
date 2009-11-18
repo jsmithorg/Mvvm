@@ -155,4 +155,99 @@ namespace JSmith.Mvvm.Command
 
     }//end class
 
+    public class DelegateCommand<TParameter> : Command
+    {
+        private readonly Func<TParameter, bool> _canExecute;
+        private readonly Action<TParameter> _execute;
+
+        public DelegateCommand(Action<TParameter> execute) : this(execute, null) { }
+
+        public DelegateCommand(Action<TParameter> execute, Func<TParameter, bool> canExecute)
+        {
+            //execute.AssertNotNull("execute");
+            _execute = execute;
+            _canExecute = canExecute;
+            
+        }//end method
+
+        public override bool CanExecute(object parameter)
+        {
+            if (_canExecute == null)
+                return true;
+
+            CommandEventArgs args = (CommandEventArgs)parameter;
+
+            return _canExecute((TParameter)args.Parameter);
+
+        }//end method
+
+        public override void Execute(object parameter)
+        {
+            OnBegin();
+
+            try
+            {
+                CommandEventArgs args = (CommandEventArgs)parameter;
+                _execute((TParameter)args.Parameter);
+            }
+            catch (Exception ex)
+            {
+                OnFail(ex);
+
+                return;
+
+            }//end try
+
+            OnComplete();
+
+        }//end method
+
+    }//end class
+
+    public class DelegateCommand : Command
+    {
+        private readonly Func<object, bool> _canExecute;
+        private readonly Action<object> _execute;
+
+        public DelegateCommand(Action<object> execute) : this(execute, null) { }
+
+        public DelegateCommand(Action<object> execute, Func<object, bool> canExecute)
+        {
+            //execute.AssertNotNull("execute");
+            _execute = execute;
+            _canExecute = canExecute;
+
+        }//end method
+
+        public override bool CanExecute(object parameter)
+        {
+            if (_canExecute == null)
+                return true;
+
+            return _canExecute(parameter);
+
+        }//end method
+
+        public override void Execute(object parameter)
+        {
+            OnBegin();
+
+            try
+            {
+                _execute(parameter);
+            }
+            catch (Exception ex)
+            {
+                OnFail(ex);
+
+                return;
+
+            }//end try
+
+            OnComplete();
+
+        }//end method
+
+    }//end class
+
 }//end namespace
