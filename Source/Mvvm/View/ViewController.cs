@@ -26,10 +26,7 @@ namespace JSmith.Mvvm.View
 
                 _view = value;
 
-                //do transition
-
-                LayoutRoot.Children.Clear();
-                LayoutRoot.Children.Add((UIElement)_view);
+                OnViewAdded();
 
             }//end set
 
@@ -56,6 +53,13 @@ namespace JSmith.Mvvm.View
             LayoutRoot = (Grid)GetTemplateChild("LayoutRoot");
 
             base.OnApplyTemplate();
+
+        }//end method
+
+        protected virtual void OnViewAdded()
+        {
+            LayoutRoot.Children.Clear();
+            LayoutRoot.Children.Add((UIElement)_view);
 
         }//end method
 
