@@ -24,6 +24,7 @@ namespace JSmith.Mvvm.View
                 if (_view == value)
                     return;
 
+                lastView = _view;
                 _view = value;
 
                 OnViewAdded();
@@ -32,7 +33,8 @@ namespace JSmith.Mvvm.View
 
         }//end property
 
-        protected Grid LayoutRoot;
+        protected IView lastView;
+        protected Grid layoutRoot;
 
         public ViewController()
         {
@@ -50,7 +52,7 @@ namespace JSmith.Mvvm.View
 
         public override void OnApplyTemplate()
         {
-            LayoutRoot = (Grid)GetTemplateChild("LayoutRoot");
+            layoutRoot = (Grid)GetTemplateChild("LayoutRoot");
 
             base.OnApplyTemplate();
 
@@ -58,8 +60,8 @@ namespace JSmith.Mvvm.View
 
         protected virtual void OnViewAdded()
         {
-            LayoutRoot.Children.Clear();
-            LayoutRoot.Children.Add((UIElement)_view);
+            layoutRoot.Children.Clear();
+            layoutRoot.Children.Add((UIElement)_view);
 
         }//end method
 
