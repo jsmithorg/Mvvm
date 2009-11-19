@@ -28,14 +28,14 @@ namespace JSmith.Mvvm.View
 
                 //do transition
 
-                _root.Children.Clear();
-                _root.Children.Add((UIElement)_view);
+                LayoutRoot.Children.Clear();
+                LayoutRoot.Children.Add((UIElement)_view);
 
             }//end set
 
         }//end property
 
-        private Grid _root;
+        protected Grid LayoutRoot;
 
         public ViewController()
         {
@@ -53,7 +53,7 @@ namespace JSmith.Mvvm.View
 
         public override void OnApplyTemplate()
         {
-            _root = (Grid)GetTemplateChild("LayoutRoot");
+            LayoutRoot = (Grid)GetTemplateChild("LayoutRoot");
 
             base.OnApplyTemplate();
 
