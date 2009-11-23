@@ -20,6 +20,8 @@ namespace JSmith.Mvvm.View
         void BeginDrag();
         void EndDrag();
 
+        bool IsDragging { get; }
+
     }//end interface
 
 }//end namespace

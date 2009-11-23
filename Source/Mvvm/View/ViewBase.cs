@@ -13,7 +13,7 @@ using System.Windows.Browser;
 
 namespace JSmith.Mvvm.View
 {
-    public class ViewBase : UserControl, IView, IDraggable
+    public class ViewBase : DraggableUserControl, IDraggable, IView
     {
         public const string DefaultRootElementName = "LayoutRoot";
 
@@ -58,11 +58,7 @@ namespace JSmith.Mvvm.View
 
         #region Constructor
 
-        public ViewBase()
-        {
-            //MouseLeftButtonDown += new MouseButtonEventHandler(ViewBase_MouseLeftButtonDown);
-
-        }//end constructor
+        public ViewBase() : base() { }
 
         public ViewBase(string id) : this()
         {
@@ -71,158 +67,6 @@ namespace JSmith.Mvvm.View
         }//end constructor
 
         #endregion
-
-        #region IDraggable Members
-
-        private readonly object _lock = new object();
-
-        private EventHandler _dragStarted;
-        public event EventHandler DragStarted
-        {
-            add
-            {
-                lock (_lock)
-                    _dragStarted += value;
-
-            }//end add
-
-            remove
-            {
-                lock (_lock)
-                    _dragStarted -= value;
-
-            }//end remove
-
-        }//end event
-
-        private MouseEventHandler _dragging;
-        public event MouseEventHandler Dragging
-        {
-            add
-            {
-                lock (_lock)
-                    _dragging += value;
-
-            }//end add
-
-            remove
-            {
-                lock (_lock)
-                    _dragging -= value;
-
-            }//end remove
-
-        }//end event
-
-        private EventHandler _dragComplete;
-        public event EventHandler DragComplete
-        {
-            add
-            {
-                lock (_lock)
-                    _dragComplete += value;
-
-            }//end add
-
-            remove
-            {
-                lock (_lock)
-                    _dragComplete -= value;
-
-            }//end remove
-
-        }//end event
-
-        public void BeginDrag()
-        {
-            //on drag started
-            OnDragStarted();
-
-            MouseMove += new MouseEventHandler(ViewBase_MouseMove);
-
-        }//end method
-
-        public void EndDrag()
-        {
-            MouseMove -= new MouseEventHandler(ViewBase_MouseMove);
-
-            //on drag complete
-            OnDragComplete();
-
-        }//end method
-
-        #endregion
-
-        private void ViewBase_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //on drag started
-            //OnDragStarted();
-
-            //ViewBase vb = (ViewBase)sender;
-            //vb.MouseMove += new MouseEventHandler(ViewBase_MouseMove);
-            //vb.MouseLeftButtonUp += new MouseButtonEventHandler(ViewBase_MouseLeftButtonUp);
-
-        }//end method
-
-        private void ViewBase_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            //ViewBase vb = (ViewBase)sender;
-            //vb.MouseMove -= new MouseEventHandler(ViewBase_MouseMove);
-            //vb.MouseLeftButtonUp -= new MouseButtonEventHandler(ViewBase_MouseLeftButtonUp);
-
-            //on drag complete
-            //OnDragComplete();
-
-        }//end method
-
-        private void ViewBase_MouseMove(object sender, MouseEventArgs e)
-        {
-            //on dragging
-            OnDragging(e);
-
-        }//end method
-
-        protected virtual void OnDragStarted()
-        {
-            EventHandler handler;
-            lock (_lock)
-            {
-                handler = _dragStarted;
-
-            }//end lock
-
-            if (handler != null)
-                handler(this, new EventArgs());
-            
-        }//end method
-
-        protected virtual void OnDragging(MouseEventArgs e)
-        {
-            MouseEventHandler handler;
-            lock (_lock)
-            {
-                handler = _dragging;
-
-            }//end lock
-
-            if (handler != null)
-                handler(this, e);
-
-        }//end method
-
-        protected virtual void OnDragComplete()
-        {
-            EventHandler handler;
-            lock (_lock)
-            {
-                handler = _dragComplete;
-
-            }//end lock
-
-            if (handler != null)
-                handler(this, new EventArgs());
-
-        }//end method
 
         #region Methods
 

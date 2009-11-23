@@ -7,6 +7,32 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm", "Mvvm\Mvvm.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvvm.Tests", "Unit Tests\Mvvm.Tests\Mvvm.Tests.csproj", "{62D50BAF-1A24-4239-BCC6-0801A65090B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{1A70E870-BC65-4F9C-9ED8-765C3FF63EE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragExample", "..\Examples\DragExample\DragExample.csproj", "{C75D0533-A753-495B-8EE4-1F284DA991F7}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DragExample.Web", "..\Examples\DragExample.Web\", "{7C5A4FDB-E548-4403-AC59-6A516E7AAB6B}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFramework = "3.5"
+		Debug.AspNetCompiler.VirtualPath = "/DragExample.Web"
+		Debug.AspNetCompiler.PhysicalPath = "..\Examples\DragExample.Web\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\DragExample.Web\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/DragExample.Web"
+		Release.AspNetCompiler.PhysicalPath = "..\Examples\DragExample.Web\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\DragExample.Web\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "55182"
+		DefaultWebSiteLanguage = "Visual C#"
+		ProjOutputReferences = "{C75D0533-A753-495B-8EE4-1F284DA991F7}|ClientBin|false;"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,11 +47,21 @@ Global
 		{62D50BAF-1A24-4239-BCC6-0801A65090B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62D50BAF-1A24-4239-BCC6-0801A65090B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62D50BAF-1A24-4239-BCC6-0801A65090B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C75D0533-A753-495B-8EE4-1F284DA991F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C75D0533-A753-495B-8EE4-1F284DA991F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C75D0533-A753-495B-8EE4-1F284DA991F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C75D0533-A753-495B-8EE4-1F284DA991F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C5A4FDB-E548-4403-AC59-6A516E7AAB6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C5A4FDB-E548-4403-AC59-6A516E7AAB6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C5A4FDB-E548-4403-AC59-6A516E7AAB6B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C5A4FDB-E548-4403-AC59-6A516E7AAB6B}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{62D50BAF-1A24-4239-BCC6-0801A65090B2} = {CC70D79F-D6BB-4DEA-A2FC-6E2F69ADED83}
+		{C75D0533-A753-495B-8EE4-1F284DA991F7} = {1A70E870-BC65-4F9C-9ED8-765C3FF63EE1}
+		{7C5A4FDB-E548-4403-AC59-6A516E7AAB6B} = {1A70E870-BC65-4F9C-9ED8-765C3FF63EE1}
 	EndGlobalSection
 EndGlobal

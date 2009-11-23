@@ -61,6 +61,7 @@
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\ViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\DraggableUserControl.cs" />
     <Compile Include="View\IDraggable.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\View.cs">
