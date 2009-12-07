@@ -106,6 +106,13 @@ namespace JSmith.Mvvm.View
 
         }//end method
 
+        public override string ToString()
+        {
+            return "[ ViewBase id=\"" + Id + 
+                   "\" data=\"" + DataContext + "\" ]";
+        
+        }//end method
+
         #endregion
 
     }//end class
